@@ -5,6 +5,7 @@ import com.kpakula.recruitment.dto.ContactDto;
 import com.kpakula.recruitment.model.User;
 import com.kpakula.recruitment.dto.UserDto;
 import com.kpakula.recruitment.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +19,19 @@ public class UserController {
         this.userService = userService;
     }
 
+    // here I decided to give a demonstration of two methods -
+    // the first one fetching everything and the second one allowing to fetch everything with paging
+
+    //    @GetMapping
+    //    public List<User> getUsers() {
+    //        return userService.findAll();
+    //    }
+
     @GetMapping
-    public List<User> getUsers() {
-        return userService.findAll();
+    public List<User> getUsersPagination(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return userService.findAllPageable(pageNo, pageSize);
     }
 
     @GetMapping("/{pesel}")
@@ -29,7 +40,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody UserDto userDto) {
+    public User addUser(@Valid @RequestBody UserDto userDto) {
+        userService.checkIfUserExist(userDto.getPesel());
         return userService.save(userDto);
     }
 

@@ -23,7 +23,7 @@ public class ApplicationStartupInsertRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        List<User> users = new ArrayList<>();
-//        for (int i = 0; i < 15000; i++) {
+//        for (int i = 0; i < 1; i++) {
 //            User user = new User();
 //            user.setFirstname("Firstname" + (i+1));
 //            user.setLastname("Lastname" + (i+1));

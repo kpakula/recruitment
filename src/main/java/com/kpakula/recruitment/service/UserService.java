@@ -1,6 +1,7 @@
 package com.kpakula.recruitment.service;
 
 import com.kpakula.recruitment.exception.ContactExistsException;
+import com.kpakula.recruitment.exception.UserAlreadyExistsException;
 import com.kpakula.recruitment.exception.UserNotFoundException;
 import com.kpakula.recruitment.model.Contact;
 import com.kpakula.recruitment.dto.ContactDto;
@@ -8,9 +9,14 @@ import com.kpakula.recruitment.model.User;
 import com.kpakula.recruitment.dto.UserDto;
 import com.kpakula.recruitment.repository.ContactRepository;
 import com.kpakula.recruitment.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,8 +32,27 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> findAllPageable(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<User> pagedResult = userRepository.findAll(pageable);
+
+        if (pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     public User findByPesel(String pesel) {
-        return userRepository.findByPesel(pesel).orElseThrow(() -> new UserNotFoundException(pesel));
+        return findUserByPesel(pesel).orElseThrow(() -> new UserNotFoundException(pesel));
+    }
+
+    public void checkIfUserExist(String pesel) {
+        findUserByPesel(pesel).ifPresent((user -> {throw new UserAlreadyExistsException(pesel);}));
+    }
+
+    public Optional<User> findUserByPesel(String pesel) {
+        return userRepository.findByPesel(pesel);
     }
 
     public User save(UserDto userDto) {
