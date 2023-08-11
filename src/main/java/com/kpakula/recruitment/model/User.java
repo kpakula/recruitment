@@ -1,6 +1,5 @@
 package com.kpakula.recruitment.model;
 
-import com.kpakula.recruitment.model.Contact;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

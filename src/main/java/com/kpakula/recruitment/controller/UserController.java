@@ -3,16 +3,21 @@ package com.kpakula.recruitment.controller;
 import com.kpakula.recruitment.exception.ContactExistsException;
 import com.kpakula.recruitment.exception.UserNotFoundException;
 import com.kpakula.recruitment.model.Contact;
+import com.kpakula.recruitment.model.ContactDto;
+import com.kpakula.recruitment.model.UserDump;
 import com.kpakula.recruitment.repository.ContactRepository;
 import com.kpakula.recruitment.model.User;
+import com.kpakula.recruitment.repository.UserDumpRepository;
 import com.kpakula.recruitment.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/users")
 public class UserController {
     private final UserRepository userRepository;
     private final ContactRepository contactRepository;
@@ -37,31 +42,22 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @PostMapping("/{pesel}/contact")
-    public User addContactToUser(@PathVariable String pesel, @RequestBody Contact contact) {
-        User user = userRepository.findByPesel(pesel).orElseThrow(() -> new UserNotFoundException(pesel));
+    @PostMapping("/{id}/contact")
+    public Contact addContactToUser(@PathVariable Long id, @RequestBody ContactDto contactDto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
-        for (Contact userContact : user.getContacts()) {
-            if (userContact.getType().equals(contact.getType())) {
-                throw new ContactExistsException(userContact.getUserId(), userContact.getType());
+        for (Contact c : user.getContacts()) {
+            if (c.getType().equals(contactDto.getType())) {
+                throw new ContactExistsException(c.getUserId(), c.getType());
             }
         }
 
-        contact.setUserId(user.getId());
-        contactRepository.save(contact);
+        Contact contact = new Contact();
+        contact.setUserId(id);
+        contact.setType(contactDto.getType());
+        contact.setValue(contactDto.getValue());
 
-        return user;
+        return contactRepository.save(contact);
     }
 
-    @GetMapping("/downloadFile")
-    public void downloadFile() {
-        try {
-            FileOutputStream fos  = new FileOutputStream("t.txt");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(userRepository.findAll());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
