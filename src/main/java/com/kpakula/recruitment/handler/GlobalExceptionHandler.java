@@ -5,6 +5,7 @@ import com.kpakula.recruitment.exception.FileProcessingException;
 import com.kpakula.recruitment.exception.UserAlreadyExistsException;
 import com.kpakula.recruitment.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,12 +58,23 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorMessage handleMethodArgumentNotValidException(WebRequest request, MethodArgumentNotValidException ex) {
-        ex.getMessage();
-        ex.getBindingResult().getFieldError();
         return new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage(),
+                request.getDescription(false)
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorMessage handleMethodArgumentNotValidException(WebRequest request, Exception ex) {
+
+        return new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
                 request.getDescription(false)
         );
     }
