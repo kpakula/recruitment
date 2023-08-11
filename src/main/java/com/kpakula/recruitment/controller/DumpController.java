@@ -34,7 +34,6 @@ public class DumpController {
             userDump.setCreatedDate(Instant.now());
             userDump.setPath("user-dump-" + userDump.getUuid() +  ".txt");
 
-
             FileOutputStream fos  = new FileOutputStream(userDump.getPath());
             OutputStreamWriter osw = new OutputStreamWriter(fos);
 

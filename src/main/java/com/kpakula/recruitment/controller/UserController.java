@@ -4,17 +4,12 @@ import com.kpakula.recruitment.exception.ContactExistsException;
 import com.kpakula.recruitment.exception.UserNotFoundException;
 import com.kpakula.recruitment.model.Contact;
 import com.kpakula.recruitment.model.ContactDto;
-import com.kpakula.recruitment.model.UserDump;
 import com.kpakula.recruitment.repository.ContactRepository;
 import com.kpakula.recruitment.model.User;
-import com.kpakula.recruitment.repository.UserDumpRepository;
 import com.kpakula.recruitment.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
