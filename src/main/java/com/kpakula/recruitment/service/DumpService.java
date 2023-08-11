@@ -1,5 +1,6 @@
 package com.kpakula.recruitment.service;
 
+import com.kpakula.recruitment.exception.FileProcessingException;
 import com.kpakula.recruitment.model.User;
 import com.kpakula.recruitment.model.UserDump;
 import com.kpakula.recruitment.repository.UserDumpRepository;
@@ -29,9 +30,10 @@ public class DumpService {
             saveUsersToFile(userDump.getPath());
 
             userDumpRepository.save(userDump);
+
             return userDump;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileProcessingException();
         }
     }
 

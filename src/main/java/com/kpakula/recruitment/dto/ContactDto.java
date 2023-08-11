@@ -1,5 +1,6 @@
-package com.kpakula.recruitment.model;
+package com.kpakula.recruitment.dto;
 
+import com.kpakula.recruitment.model.ContactType;
 import lombok.Data;
 
 @Data

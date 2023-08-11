@@ -1,6 +1,7 @@
 package com.kpakula.recruitment.handler;
 
 import com.kpakula.recruitment.exception.ContactExistsException;
+import com.kpakula.recruitment.exception.FileProcessingException;
 import com.kpakula.recruitment.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,6 +32,18 @@ public class GlobalExceptionHandler {
     public ErrorMessage handleContactExistsException(WebRequest request, Exception ex) {
         return new ErrorMessage(
                 HttpStatus.CONFLICT.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+    }
+
+    @ExceptionHandler(FileProcessingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorMessage handleFileProcessingException(WebRequest request, Exception ex) {
+        return new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false)
