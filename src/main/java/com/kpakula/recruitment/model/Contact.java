@@ -2,6 +2,7 @@ package com.kpakula.recruitment.model;
 
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 })
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Contact implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_id_seq")
